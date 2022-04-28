@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.myfi">
+    package="com.yuriguernsey.myfi">
    <application
         android:label="myfi"
         android:name="${applicationName}"

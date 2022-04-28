@@ -1,4 +1,4 @@
-package com.example.myfi
+package com.yuriguernsey.myfi
 
 import io.flutter.embedding.android.FlutterActivity
 
