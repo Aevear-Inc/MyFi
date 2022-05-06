@@ -106,6 +106,41 @@ class _MyHomePageState extends State<MyHomePage> {
             },
           ),
         ],
+        // leading: GestureDetector(
+        //   child: Icon(
+        //     Icons.help,
+        //   ),
+        //   onTap: () {
+        //     showDialog(
+        //         context: context,
+        //         builder: (context) {
+        //           return AlertDialog(
+        //             title: Text("Do you want to  delete?"),
+        //             content: Container(
+        //               height: 50,
+        //               child: Column(
+        //                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        //                 children: [
+        //                   Text(
+        //                     "This is a Custom Dialog",
+        //                     style: TextStyle(fontSize: 20),
+        //                   ),
+        //                 ],
+        //               ),
+        //             ),
+        //             actions: [
+        //               OutlinedButton(
+        //                 onPressed: () {
+        //                   // Go Back
+        //                   Navigator.pop(context);
+        //                 },
+        //                 child: Text("Close"),
+        //               )
+        //             ],
+        //           );
+        //         });
+        //   },
+        // ),
       ),
       body: data.isEmpty
           ? Center(
