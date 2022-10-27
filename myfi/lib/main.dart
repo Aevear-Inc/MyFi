@@ -4,9 +4,12 @@ import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:flutter/material.dart';
 import 'package:myfi/viewCode.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'ad_helper.dart';
 
 var database;
 var data;
+BannerAd? _bannerAd;
 
 class Wifi {
   final int id;
@@ -91,6 +94,27 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    BannerAd(
+      adUnitId: AdHelper.bannerAdUnitId,
+      request: AdRequest(),
+      size: AdSize.banner,
+      listener: BannerAdListener(
+        onAdLoaded: (ad) {
+          setState(() {
+            _bannerAd = ad as BannerAd;
+          });
+        },
+        onAdFailedToLoad: (ad, err) {
+          print('Failed to load a banner ad: ${err.message}');
+          ad.dispose();
+        },
+      ),
+    ).load();
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -146,35 +170,40 @@ class _MyHomePageState extends State<MyHomePage> {
           ? Center(
               child: Text('No Data'),
             )
-          : ListView.builder(
-              padding: const EdgeInsets.all(8),
-              itemCount: data.length,
-              itemBuilder: (BuildContext context, int index) {
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => viewWifi(
-                          dataIndex: index,
+          : Column(
+              children: [
+                ListView.builder(
+                  padding: const EdgeInsets.all(8),
+                  itemCount: data.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => viewWifi(
+                              dataIndex: index,
+                            ),
+                          ),
+                        ).then((value) async {
+                          data = await wifi();
+                          setState(() {
+                            // refresh state of Page1
+                          });
+                        });
+                      },
+                      child: Card(
+                        child: ListTile(
+                          title: Text(data[index].Title),
+                          subtitle: Text(data[index].Description),
+                          trailing: Icon(Icons.keyboard_arrow_right_rounded),
                         ),
                       ),
-                    ).then((value) async {
-                      data = await wifi();
-                      setState(() {
-                        // refresh state of Page1
-                      });
-                    });
+                    );
                   },
-                  child: Card(
-                    child: ListTile(
-                      title: Text(data[index].Title),
-                      subtitle: Text(data[index].Description),
-                      trailing: Icon(Icons.keyboard_arrow_right_rounded),
-                    ),
-                  ),
-                );
-              },
+                ),
+                AdWidget(ad: _bannerAd!)
+              ],
             ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {
@@ -322,6 +351,11 @@ class _FullScreenDialogState extends State<FullScreenDialog> {
       ),
     );
   }
+}
+
+Future<InitializationStatus> _initGoogleMobileAds() {
+  // TODO: Initialize Google Mobile Ads SDK
+  return MobileAds.instance.initialize();
 }
 
 Future<void> insertWifi(Wifi wifi) async {
